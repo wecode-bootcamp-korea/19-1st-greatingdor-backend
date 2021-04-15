@@ -14,7 +14,7 @@ class Category(models.Model):
         db_table = "categories"
 
 class Product(models.Model):
-    sub_category = models.ForeignKey("Category", on_delete=models.CASCADE)
+    category     = models.ForeignKey("Category", on_delete=models.CASCADE)
     title        = models.CharField(max_length=200)
     description  = models.CharField(max_length=200)
     price        = models.DecimalField(max_digits=20, decimal_places=2)
