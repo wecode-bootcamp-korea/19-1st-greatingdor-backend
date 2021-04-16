@@ -7,9 +7,8 @@ class Member(models.Model):
     email            = models.CharField(max_length=50)
     date_birth       = models.DateTimeField()
     phone_number     = models.CharField(max_length=50)
-    product_favorite = models.ManyToManyField("products.Product", through="UserFavorite", related_name="user_favorite")
+    product_favorite = models.ManyToManyField("products.Product", through="UserFavorite", related_name="favorite")
     coupon           = models.ManyToManyField("coupons.Coupon", through="coupons.MemberCoupon", related_name="coupon")
-    product_cart     = models.ManyToManyField("products.Product", through="orders.Cart", related_name="cart")
 
     class Meta:
         db_table = "members"
