@@ -33,14 +33,14 @@ class SignUpView(View):
                 return JsonResponse({'MESSAGE' : 'INVALID_DATE_BIRTH'}, status=400)
 
             if not validator_phone_number(data['phone_number']):
-                return JsonResponse({'MESSAGE' : 'PHONE_NUMBER'}, status=400)
+                return JsonResponse({'MESSAGE' : 'INVALID_PHONE_NUMBER'}, status=400)
 
             if Member.objects.filter(
                     Q(account      = data['account']) |
                     Q(email        = data['email']) |
                     Q(phone_number = data['phone_number'])
                     ):
-                return JsonResponse({'MESSAGE' : 'DUPLICATED_USER'})
+                return JsonResponse({'MESSAGE' : 'DUPLICATED_USER'}, status=400)
 
             Member.objects.create(
                     name         = data['name'],
@@ -64,7 +64,7 @@ class SignInView(View):
             password = data['password']
             
             if not Member.objects.filter(account=account).exists():
-                return JsonResponse({'MESSAGE' : 'NOT FOUND'}, status=404)
+                return JsonResponse({'MESSAGE' : 'NOT_FOUND'}, status=404)
 
             member = Member.objects.get(account=account)
             
@@ -72,7 +72,7 @@ class SignInView(View):
                 Token = jwt.encode({'Member_id' : member.id}, SECRET_KEY, 'HS256').decode('utf-8')
                 return JsonResponse({'MESSAGE' : 'SUCCESS', 'Token' : Token}, status=200)
 
-            return JsonResponse({'MESSAGE' : 'INVALID USER'}, status=401)
+            return JsonResponse({'MESSAGE' : 'INVALID_USER'}, status=401)
 
         except KeyError:
-            return JsonResponse({'MESSAGE' : 'KEY ERROR'}, status=400)
+            return JsonResponse({'MESSAGE' : 'KEY_ERROR'}, status=400)
