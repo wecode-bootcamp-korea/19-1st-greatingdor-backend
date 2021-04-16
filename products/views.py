@@ -22,9 +22,7 @@ class MainView(View):
         result = []
         for info in infos:
             images  = info.productimage_set.all()
-            image_list = []
-            for image in images:
-                image_list.append(image.image_url)
+            image_list = [image.image_url for image in images]
             result.append(
             {
             'image': image_list,
