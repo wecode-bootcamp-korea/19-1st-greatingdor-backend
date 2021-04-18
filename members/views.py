@@ -69,8 +69,8 @@ class SignInView(View):
             member = Member.objects.get(account=account)
             
             if bcrypt.checkpw(password.encode('utf-8'), member.password.encode('utf-8')):
-                Token = jwt.encode({'Member_id' : member.id}, SECRET_KEY, 'HS256').decode('utf-8')
-                return JsonResponse({'MESSAGE' : 'SUCCESS', 'Token' : Token}, status=200)
+                token = jwt.encode({'member_id' : member.id}, SECRET_KEY, 'HS256').decode('utf-8')
+                return JsonResponse({'MESSAGE' : 'SUCCESS', 'Token' : token}, status=200)
 
             return JsonResponse({'MESSAGE' : 'INVALID_USER'}, status=401)
 

@@ -14,8 +14,8 @@ def login_check(func):
         try:
             access_token   = request.header.get('Authorization', None)
             payload        = jwt.decode(access_token, SECRET_KEY, algorithms='HS256')
-            Member_id      = Member.objects.get(id=payload['Member_id'])
-            request.member = Member_id
+            member         = Member.objects.get(id=payload['member_id'])
+            request.member = member
 
         except jwt.exceptions.DecodeError:
             return JsonResponse({'MESSAGE' : 'INVALID TOKEN'}, status=400)
