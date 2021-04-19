@@ -1,10 +1,10 @@
 import json
 
-from django.views import View
-from django.http import JsonResponse
+from django.views     import View
+from django.http      import JsonResponse
 from django.db.models import F
 
-from products.models import Product, ProductImage
+from products.models        import Product, ProductImage
 from product_details.models import ProductDetail
 
 
@@ -19,11 +19,11 @@ class ProductDetailView(View):
             result = (
                 ProductDetail.objects.filter(product_id=product_id)
                 .annotate(
-                    menu_name=F("product__category__menu__name"),
-                    category_name=F("product__category__name"),
-                    title=F("product__title"),
-                    description=F("product__description"),
-                    price=F("product__price"),
+                    menu_name     = F("product__category__menu__name"),
+                    category_name = F("product__category__name"),
+                    title         = F("product__title"),
+                    description   = F("product__description"),
+                    price         = F("product__price"),
                 )
                 .values(
                     "menu_name",
