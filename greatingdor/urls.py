@@ -19,5 +19,5 @@ from products.views import CategoryView
 
 urlpatterns = [
     path('products', include('products.urls')),
-    path('categories', CategoryView.as_view()),
+    path('members', include('members.urls')),
 ]
