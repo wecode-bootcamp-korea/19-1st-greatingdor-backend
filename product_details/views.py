@@ -4,7 +4,7 @@ from django.views import View
 from django.http import JsonResponse
 from django.db.models import F
 
-from products.models import Product, ProductTag, ProductImage
+from products.models import Product, ProductImage
 from product_details.models import ProductDetail
 
 
