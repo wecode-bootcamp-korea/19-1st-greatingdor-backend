@@ -15,9 +15,6 @@ Including another URLconf
 """
 from django.urls import path, include
 
-from products.views import CategoryView
-
 urlpatterns = [
     path('products', include('products.urls')),
-    path('categories', CategoryView.as_view()),
 ]
