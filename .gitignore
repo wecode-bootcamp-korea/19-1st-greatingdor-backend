@@ -319,7 +319,7 @@ tags
 [._]*.un~
 
 ### vscode ###
-.vscode/*
+.vscode
 .vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -356,7 +356,9 @@ zsdoc/data
 /tests/_output/*
 !/tests/_output/.gitkeep
 
-# proejct settings
+# proejct
+*.csv
 my_settings.py
+uploader.py
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm,vscode,vim,linux,macos,zsh
