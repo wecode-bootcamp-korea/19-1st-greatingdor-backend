@@ -15,4 +15,7 @@ Including another URLconf
 """
 from django.urls import path, include
 
-urlpatterns = [path("market", include("product_details.urls"))]
+urlpatterns = [
+    path("members", include("members.urls")),
+    path("market", include("product_details.urls")),
+]
