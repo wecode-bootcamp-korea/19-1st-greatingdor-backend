@@ -38,17 +38,9 @@ class MainView(View):
 class CategoryView(View):
     def get(self, request):
         menus = Menu.objects.all()
-        result = []
-        
-        for menu in menus:
-            categories = menu.category_set.all()
-            category_list = []
-            for category in categories:
-                category_list.append(category.name)
-            result.append(
-            {
+        result = [{
             'menu': menu.name,
-            'category': category_list,
-            }
-            )
+            'category': [category.name for category in menu.category_set.all()],}
+            for menu in menus]
         return JsonResponse({'RESULT':result}, status=200)
+    
