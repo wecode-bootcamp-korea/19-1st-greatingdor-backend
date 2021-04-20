@@ -15,19 +15,21 @@ class ProductDetailView(View):
             product = Product.objects.get(id=product_id)
 
             result = {
-                "product_id": product.id,
-                "title": product.title,
-                "description": product.description,
-                "price": product.price,
-                "category_name": product.category.name,
-                "menu_name": product.category.menu.name,
-                "discount_rate": product.productdetail_set.all().first().discount_rate,
-                "capacity": product.productdetail_set.all().first().capacity,
-                "kcal": product.productdetail_set.all().first().kcal,
-                "images": [
-                    product.image_url for product in product.productimage_set.all()
+                "product_id"    : product.id,
+                "title"         : product.title,
+                "description"   : product.description,
+                "price"         : product.price,
+                "category_name" : product.category.name,
+                "menu_name"     : product.category.menu.name,
+                "discount_rate" : product.productdetail_set.all().first().discount_rate,
+                "capacity"      : product.productdetail_set.all().first().capacity,
+                "kcal"          : product.productdetail_set.all().first().kcal,
+                "images"        : [
+                    iproduct.image_url for product in product.productimage_set.all()
                 ],
-                "tags": [product.tag.name for product in product.producttag_set.all()],
+                "tags"          : [
+                    product.tag.name for product in product.producttag_set.all()
+                ],
             }
 
             return JsonResponse({"RESULT": result}, status=200)
