@@ -25,7 +25,7 @@ class ProductDetailView(View):
                 "capacity"      : product.productdetail_set.all().first().capacity,
                 "kcal"          : product.productdetail_set.all().first().kcal,
                 "images"        : [
-                    iproduct.image_url for product in product.productimage_set.all()
+                    product.image_url for product in product.productimage_set.all()
                 ],
                 "tags"          : [
                     product.tag.name for product in product.producttag_set.all()
