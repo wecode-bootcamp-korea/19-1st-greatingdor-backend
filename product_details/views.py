@@ -4,8 +4,7 @@ from django.views     import View
 from django.http      import JsonResponse
 from django.db.models import F
 
-from products.models        import Product, ProductImage
-from product_details.models import ProductDetail
+from products.models import Product
 
 
 class ProductDetailView(View):
@@ -29,12 +28,10 @@ class ProductDetailView(View):
                 "capacity"      : product.productdetail_set.all().first().capacity,
                 "kcal"          : product.productdetail_set.all().first().kcal,
                 "images"        : [
-                    image["image_url"]
-                    for image in product.productimage_set.all().values("image_url")
+                    product.image_url for product in product.productimage_set.all()
                 ],
                 "tags"          : [
-                    item.tag.name
-                    for item in product.producttag_set.all()
+                    product.tag.name for product in product.producttag_set.all()
                 ],
             }
 
