@@ -1,5 +1,4 @@
 import json
-import random
 
 from django.http      import JsonResponse
 from django.views     import View
@@ -41,4 +40,3 @@ class CategoryView(View):
             'category' : [category.name for category in menu.category_set.all()],}
             for menu in Menu.objects.all()]
         return JsonResponse({'RESULT':result}, status=200)
-    
