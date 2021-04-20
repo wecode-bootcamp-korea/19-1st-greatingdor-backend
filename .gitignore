@@ -358,6 +358,8 @@ zsdoc/data
 
 # proejct settings
 my_settings.py
-
-
+uploader.py
+products.csv
+productdetail.csv
+tags.csv
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm,vscode,vim,linux,macos,zsh
