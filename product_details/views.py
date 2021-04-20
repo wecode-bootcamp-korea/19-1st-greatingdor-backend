@@ -36,3 +36,27 @@ class ProductDetailView(View):
 
         except KeyError:
             return JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
+
+
+class ProductOptionView(View):
+    def get(self, request, product_id):
+        try:
+            if not Product.objects.filter(id=product_id).exists():
+                return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
+
+            product       = Product.objects.get(id=product_id)
+            discount_rate = product.productdetail_set.all().first().discount_rate
+
+            result = [
+                {
+                    "product_id"   : product_id,
+                    "option_id"    : option.id,
+                    "option_name"  : option.name,
+                    "option_price" : int(option.price * (1 - discount_rate)),
+                }
+                for option in product.productoption_set.all()
+            ]
+
+            return JsonResponse({"RESULT": result}, status=200)
+        except KeyError:
+            return JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
