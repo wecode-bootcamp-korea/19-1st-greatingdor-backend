@@ -16,7 +16,7 @@ def validator_account(account):
     return False
 
 def validator_password(password):
-    validator = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}')
+    validator = re.compile('^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$')
     
     if validator.match(password):
         return True
@@ -26,13 +26,6 @@ def validator_email(email):
     validator = re.compile('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
 
     if validator.match(email):
-        return True
-    return False
-
-def validator_date_birth(date_birth):
-    validator = re.compile('^[0-9-]{10,}$')
-
-    if validator.match(date_birth):
         return True
     return False
 

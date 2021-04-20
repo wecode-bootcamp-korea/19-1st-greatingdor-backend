@@ -9,7 +9,7 @@ from django.db.models import Q
 
 from .models     import Member
 from my_settings import SECRET_KEY
-from .validation import validator_date_birth, validator_name, validator_account, validator_password, validator_email, validator_phone_number
+from .validation import validator_name, validator_account, validator_password, validator_email, validator_phone_number
 
 
 class SignUpView(View):
@@ -29,9 +29,6 @@ class SignUpView(View):
             if not validator_email(data['email']):
                 return JsonResponse({'MESSAGE' : 'INVALID_EMAIL'}, status=400)
 
-            if not validator_date_birth(data['date_birth']):
-                return JsonResponse({'MESSAGE' : 'INVALID_DATE_BIRTH'}, status=400)
-
             if not validator_phone_number(data['phone_number']):
                 return JsonResponse({'MESSAGE' : 'INVALID_PHONE_NUMBER'}, status=400)
 
@@ -39,7 +36,7 @@ class SignUpView(View):
                     Q(account      = data['account']) |
                     Q(email        = data['email']) |
                     Q(phone_number = data['phone_number'])
-                    ):
+                    ).exists():
                 return JsonResponse({'MESSAGE' : 'DUPLICATED_USER'}, status=400)
 
             Member.objects.create(
