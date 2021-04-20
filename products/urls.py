@@ -5,6 +5,6 @@ from product_details.views import ProductDetailView
 
 urlpatterns = [
     path("", MainView.as_view()),
+    path("/<product_id>", ProductDetailView.as_view()),
     path("/categories", CategoryView.as_view()),
-    path("/detail/<product_id>", ProductDetailView.as_view()),
 ]
