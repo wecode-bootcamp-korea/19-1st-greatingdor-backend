@@ -18,5 +18,4 @@ from django.urls import path, include
 urlpatterns = [
     path("products", include("products.urls")),
     path("members", include("members.urls")),
-    path("market", include("product_details.urls")),
 ]
