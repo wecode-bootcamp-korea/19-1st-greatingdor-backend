@@ -16,38 +16,27 @@ class ProductDetailView(View):
             if not Product.objects.filter(id=product_id).exists():
                 return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
 
-            result = (
-                ProductDetail.objects.filter(product_id=product_id)
-                .annotate(
-                    menu_name     = F("product__category__menu__name"),
-                    category_name = F("product__category__name"),
-                    title         = F("product__title"),
-                    description   = F("product__description"),
-                    price         = F("product__price"),
-                )
-                .values(
-                    "menu_name",
-                    "category_name",
-                    "title",
-                    "description",
-                    "price",
-                    "content",
-                    "discount_rate",
-                    "capacity",
-                    "kcal",
-                )
-                .first()
-            )
+            product = Product.objects.get(id=product_id)
 
-            result["images"] = [
-                image.image_url
-                for image in ProductImage.objects.filter(product_id=product_id)
-            ]
-
-            result["tags"] = [
-                tag["tag__name"]
-                for tag in Product.objects.filter(id=product_id).values("tag__name")
-            ]
+            result = {
+                "product_id"    : product.id,
+                "title"         : product.title,
+                "description"   : product.description,
+                "price"         : product.price,
+                "category_name" : product.category.name,
+                "menu_name"     : product.category.menu.name,
+                "discount_rate" : product.productdetail_set.all().first().discount_rate,
+                "capacity"      : product.productdetail_set.all().first().capacity,
+                "kcal"          : product.productdetail_set.all().first().kcal,
+                "images"        : [
+                    image["image_url"]
+                    for image in product.productimage_set.all().values("image_url")
+                ],
+                "tags"          : [
+                    item.tag.name
+                    for item in product.producttag_set.all()
+                ],
+            }
 
             return JsonResponse({"RESULT": result}, status=200)
 
