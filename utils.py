@@ -12,8 +12,8 @@ def login_check(func):
     def wrapper(self, request, *args, **kwargs):
 
         try:
-            access_token   = request.header.get('Authorization', None)
-            payload        = jwt.decode(access_token, SECRET_KEY, algorithms='HS256')
+            token          = request.headers.get('Authorization', None)
+            payload        = jwt.decode(token, SECRET_KEY, algorithms='HS256')
             member         = Member.objects.get(id=payload['member_id'])
             request.member = member
 
