@@ -67,3 +67,15 @@ class CartView(View):
             ]
 
         return JsonResponse({'MESSAGE' : 'SUCCESS', 'order_products' : order_products}, status=201)
+
+
+    @login_check
+    def delete(self, request):
+        
+        data   = json.loads(request.body)
+        member_id = request.member.id
+
+        order = Order.objects.get(member_id=member_id)
+        OrderProduct.objects.get(order_id=order.id, product_id=data['product_id']).delete()
+
+        return JsonResponse({'MESSAGE' : 'SUCCESS'}, status=201)
