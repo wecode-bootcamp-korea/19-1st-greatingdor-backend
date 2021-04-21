@@ -21,9 +21,10 @@ class ProductDetailView(View):
                 "price"         : product.price,
                 "category_name" : product.category.name,
                 "menu_name"     : product.category.menu.name,
-                "discount_rate" : product.productdetail_set.all().first().discount_rate,
-                "capacity"      : product.productdetail_set.all().first().capacity,
-                "kcal"          : product.productdetail_set.all().first().kcal,
+                "discount_rate" : product.productdetail_set.first().discount_rate,
+                "capacity"      : product.productdetail_set.first().capacity,
+                "kcal"          : product.productdetail_set.first().kcal,
+                "content"       : product.productdetail_set.first().content,
                 "images"        : [
                     product.image_url for product in product.productimage_set.all()
                 ],
