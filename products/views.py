@@ -50,7 +50,7 @@ class MainView(View):
         limit     = int(page_size * page)
         offset    = int(limit - page_size)
             
-        return JsonResponse({'RESULT':result}, status=200)
+        return JsonResponse({'RESULT':result[offset:limit]}, status=200)
 
 class CategoryView(View):
     def get(self, request):
