@@ -5,16 +5,13 @@ from django.http  import JsonResponse
 
 from products.models        import Product
 from product_details.models import ProductReview
-
-MESSAGE = {
-    "404": "NOT_FOUND",
-}
+from product_details.utils  import is_exists_product
 
 class ProductDetailView(View):
     def get(self, request, product_id):
 
         if not is_exists_product(product_id):
-            return JsonResponse({"MESSAGE": MESSAGE["404"]}, status=404)
+            return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
 
         product = Product.objects.get(id=product_id)
 
@@ -42,7 +39,7 @@ class ProductOptionView(View):
     def get(self, request, product_id):
 
         if not is_exists_product(product_id):
-            return JsonResponse({"MESSAGE": MESSAGE["404"]}, status=404)
+            return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
 
         product       = Product.objects.get(id=product_id)
         discount_rate = product.productdetail_set.first().discount_rate
@@ -63,12 +60,20 @@ class ProductReviewView(View):
     def get(self, request, product_id):
 
         if not is_exists_product(product_id):
-            return JsonResponse({"MESSAGE": MESSAGE["404"]}, status=404)
+            return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
 
         result = [
             {
+                "title"       : review.title,
+                "member_id"   : review.member_id,
+                "created_at"  : review.created_at,
+                "option_name" : review.product_option.name,
+                "content"     : review.content,
+                "images"      : [
+                    review.image_url for review in review.productreviewimage_set.all()
+                ],
             }
+            for review in ProductReview.objects.filter(product_id=product_id).all()
         ]
 
-def is_exists_product(product_id):
-    return Product.objects.filter(id=product_id).exists()
+        return JsonResponse({"RESULT": result}, status=200)
