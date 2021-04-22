@@ -80,7 +80,7 @@ class ProductReviewView(View):
                     review.image_url for review in review.productreviewimage_set.all()
                 ],
             }
-            for review in ProductReview.objects.filter(product_id=product_id).all()[offset:limit]
+            for review in ProductReview.objects.filter(product_id=product_id).all().order_by('-created_at')[offset:limit]
         ]
 
         return JsonResponse({"RESULT": result}, status=200)
