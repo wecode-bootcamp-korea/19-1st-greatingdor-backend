@@ -3,61 +3,80 @@ import json
 from django.views import View
 from django.http  import JsonResponse
 
-from products.models import Product
-
+from products.models        import Product
+from product_details.models import ProductReview
+from product_details.utils  import is_exists_product
 
 class ProductDetailView(View):
     def get(self, request, product_id):
-        try:
-            if not Product.objects.filter(id=product_id).exists():
-                return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
 
-            product = Product.objects.get(id=product_id)
+        if not is_exists_product(product_id):
+            return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
 
-            result = {
-                "product_id"    : product.id,
-                "title"         : product.title,
-                "description"   : product.description,
-                "price"         : product.price,
-                "category_name" : product.category.name,
-                "menu_name"     : product.category.menu.name,
-                "discount_rate" : product.productdetail_set.first().discount_rate,
-                "capacity"      : product.productdetail_set.first().capacity,
-                "kcal"          : product.productdetail_set.first().kcal,
-                "content"       : product.productdetail_set.first().content,
-                "images"        : [
-                    product.image_url for product in product.productimage_set.all()
-                ],
-                "tags"          : [
-                    product.tag.name for product in product.producttag_set.all()
-                ],
-            }
+        product = Product.objects.get(id=product_id)
 
-            return JsonResponse({"RESULT": result}, status=200)
+        result = {
+            "id"            : product.id,
+            "title"         : product.title,
+            "description"   : product.description,
+            "price"         : product.price,
+            "category_name" : product.category.name,
+            "menu_name"     : product.category.menu.name,
+            "discount_rate" : product.productdetail_set.first().discount_rate,
+            "capacity"      : product.productdetail_set.first().capacity,
+            "content"       : product.productdetail_set.first().content,
+            "images"        : [
+                product.image_url for product in product.productimage_set.all()
+            ],
+            "tags"          : [
+                product.tag.name for product in product.producttag_set.all()
+            ],
+        }
 
-        except KeyError:
-            return JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
-
+        return JsonResponse({"RESULT": result}, status=200)
 
 class ProductOptionView(View):
     def get(self, request, product_id):
-        try:
-            if not Product.objects.filter(id=product_id).exists():
-                return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
 
-            product       = Product.objects.get(id=product_id)
-            discount_rate = product.productdetail_set.all().first().discount_rate
+        if not is_exists_product(product_id):
+            return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
 
-            result = [
-                {
-                    "product_id"   : product_id,
-                    "option_id"    : option.id,
-                    "option_name"  : option.name,
-                    "option_price" : int(option.price * (1 - discount_rate)),
-                }
-                for option in product.productoption_set.all()
-            ]
+        product       = Product.objects.get(id=product_id)
+        discount_rate = product.productdetail_set.first().discount_rate
 
-            return JsonResponse({"RESULT": result}, status=200)
-        except KeyError:
-            return JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
+        result = [
+            {
+                "product_id"   : product_id,
+                "option_id"    : option.id,
+                "option_name"  : option.name,
+                "option_price" : int(option.price * (1 - discount_rate)),
+            }
+            for option in product.productoption_set.all()
+        ]
+
+        return JsonResponse({"RESULT": result}, status=200)
+
+class ProductReviewView(View):
+    def get(self, request, product_id):
+
+        if not is_exists_product(product_id):
+            return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
+
+        page = request.GET["page"]
+
+
+        result = [
+            {
+                "title"       : review.title,
+                "member_id"   : review.member_id,
+                "created_at"  : review.created_at,
+                "option_name" : review.product_option.name,
+                "content"     : review.content,
+                "images"      : [
+                    review.image_url for review in review.productreviewimage_set.all()
+                ],
+            }
+            for review in ProductReview.objects.filter(product_id=product_id).all()
+        ]
+
+        return JsonResponse({"RESULT": result}, status=200)
