@@ -35,3 +35,28 @@ class CartView(View):
             return JsonResponse({'MESSAGE': 'SUCCESS'}, status = 201)
         except Order.MultipleObjectsReturned:
             return JsonResponse({'ERROR': "MORE_OBJECTS"}, status = 400)
+    
+    @login_check
+    def get(self, request):
+        try:
+            member_id = request.member.id
+            order     = Order.objects.get(member_id=member_id, progress_status='cart')
+            order_products = OrderProduct.objects.get(order_id=order.id).product
+            orders = [
+                    {
+                    'order_product_id'  : order_product.id,
+                    'product_id'        : order_product.product.id,
+                    'product_option_id' : [product_option.id for product_option in OrderProduct.objects.get(order_id=order.id).product_options],
+                    'option_name'       : [product_option.name for product_option in OrderProduct.objects.get(order_id=order.id).product_options],
+                    'product_title'     : order_product.product.title,
+                    'quantity'          : order_product.quantity,
+                    'price'             : order_product.product.price,
+                    'discount_rate'     : order_product.product.productdetail_set.first().discount_rate,
+                    'image_url'         : order_product.product.productimage_set.first().image_url
+                    } for order_product in order_products
+                ]
+            return JsonResponse({'MESSAGE' : 'SUCCESS', 'ORDER_PRODUCTS' : orders}, status=200)
+        except Order.MultipleObjectsReturned:
+            return JsonResponse({'ERROR': "MORE_OBJECTS"}, status = 400)
+        except Exception as e:
+            return JsonResponse({'ERROR': f"{e}"}, status = 400)
