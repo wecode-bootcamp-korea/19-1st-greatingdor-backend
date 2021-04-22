@@ -62,8 +62,8 @@ class CartView(View):
             return JsonResponse({'ERROR': f"{e}"}, status = 400)
     
     @login_check
-    def delete(self, request):
-        product_id = request.DELETE.get('product_id')
-        memeber_id = request.DELETE.get('member_id')
+    def delete(self, request, member_id, product_id):
+        member_id  = member_id
+        product_id = product_id
         OrderProduct.objects.get(order__member_id=member_id, product_id=product_id).delete()
         return JsonResponse({'MESSAGE' : 'SUCCESS'}, status=200)
