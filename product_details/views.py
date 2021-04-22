@@ -16,7 +16,7 @@ class ProductDetailView(View):
         product = Product.objects.get(id=product_id)
 
         result = {
-            "product_id"    : product.id,
+            "id"            : product.id,
             "title"         : product.title,
             "description"   : product.description,
             "price"         : product.price,
@@ -61,6 +61,9 @@ class ProductReviewView(View):
 
         if not is_exists_product(product_id):
             return JsonResponse({"MESSAGE": "NOT_FOUND"}, status=404)
+
+        page = request.GET["page"]
+
 
         result = [
             {
