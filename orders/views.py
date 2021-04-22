@@ -17,15 +17,15 @@ class CartView(View):
             product_option_id = data['product_option_id']
             quantity          = data['quantity']
             
-            order_product, order_product_created = Order.objects.get_or_create(member_id=member_id, progress_status='cart')
+            order, order_product_created = Order.objects.get_or_create(member_id=member_id, progress_status='cart')
             
-            if order_product.orderproduct_set.filter(product_id=product_id).exist():
-                user_cart           = user_order.orderproduct_set.get(product_id = product_id)
+            if order_product_created:
+                user_cart           = order.orderproduct_set.get(product_id = product_id)
                 user_cart.quantity += int(quantity)
                 user_cart.save()
             
             else:
-                user_cart = order_product.orderproduct_set.create(
+                user_cart = order.orderproduct_set.create(
                         order_id          = order.id,
                         product_id        = product_id,
                         product_option_id = product_option_id,
@@ -41,13 +41,13 @@ class CartView(View):
         try:
             member_id = request.member.id
             order     = Order.objects.get(member_id=member_id, progress_status='cart')
-            order_products = OrderProduct.objects.get(order_id=order.id).product
+            order_products = OrderProduct.objects.filter(order_id=order.id)
             orders = [
                     {
                     'order_product_id'  : order_product.id,
                     'product_id'        : order_product.product.id,
-                    'product_option_id' : [product_option.id for product_option in OrderProduct.objects.get(order_id=order.id).product_options],
-                    'option_name'       : [product_option.name for product_option in OrderProduct.objects.get(order_id=order.id).product_options],
+                    'product_option_id' : order_product.product_option.id,
+                    'option_name'       : order_product.product_option.name,
                     'product_title'     : order_product.product.title,
                     'quantity'          : order_product.quantity,
                     'price'             : order_product.product.price,
