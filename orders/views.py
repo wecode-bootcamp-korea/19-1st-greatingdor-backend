@@ -5,7 +5,6 @@ from django.views     import View
 
 from members.models  import Member
 from .models         import Order, OrderProduct
-from products.models import Product, ProductOption
 from utils           import login_check
 
 
@@ -19,19 +18,20 @@ class CartView(View):
             product_option_id = data['product_option_id']
             quantity          = data['quantity']
             
-            if not Order.objects.filter(member_id = member_id, progress_status='cart').exists():
-                Order.objects.create(member_id=member_id, progress_status='cart')
+            cart, created = Order.objects.get_or_create(member_id=member_id, progress_status='cart')
             
+            if not created:
+                order = Order.objects.get(member_id=member_id, progress_status='cart')
             order = Order.objects.get(member_id=member_id, progress_status='cart')
-                                   
-            if OrderProduct.objects.filter(order_id=order.id, product_id=product_id, product_option_id=product_option_id).exists():
-                
-                order_product = OrderProduct.objects.get(order_id=order.id, product_id=product_id, product_option_id=product_option_id)
-               
-                order_product.quantity += quantity
-                order_product.save()
 
-                return JsonResponse({'MESSAGE' : 'SUCCESS'} , status=201)
+            if OrderProduct.objects.filter(order_id=order.id, product_id=product_id, product_option_id=product_option_id).exists():
+               
+               order_product = OrderProduct.objects.get(order_id=order.id, product_id=product_id, product_option_id=product_option_id)
+              
+               order_product.quantity += quantity
+               order_product.save()
+
+               return JsonResponse({'MESSAGE' : 'SUCCESS'} , status=201)
 
             OrderProduct.objects.create(
                     order_id          = order.id,
@@ -71,11 +71,20 @@ class CartView(View):
 
     @login_check
     def delete(self, request):
-        
-        data   = json.loads(request.body)
+        data      = json.loads(request.body)
         member_id = request.member.id
 
-        order = Order.objects.get(member_id=member_id)
-        OrderProduct.objects.get(order_id=order.id, product_id=data['product_id']).delete()
+        OrderProduct.objects.get(order__member_id=member_id, product_id=data['product_id']).delete()
 
         return JsonResponse({'MESSAGE' : 'SUCCESS'}, status=201)
+
+
+
+
+
+
+
+
+
+
+
