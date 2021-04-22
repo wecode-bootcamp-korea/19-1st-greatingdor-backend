@@ -48,11 +48,8 @@ class CartView(View):
     @login_check
     def get(self, request):
         member_id = request.member.id
-
-        order          = Order.objects.get(member_id=member_id, progress_status='cart')
-        order_products = OrderProduct.objects.select_related('product', 'product_option').filter(order_id=order.id)
-
-        order_products = [
+        order_products = Order.objects.get(member_id=member_id, progress_status='cart').orderproduct_set.all()
+        carts = [
                 {
                     'order_product_id'  : order_product.id,
                     'product_id'        : order_product.product.id,
@@ -65,8 +62,7 @@ class CartView(View):
                     'image_url'         : order_product.product.productimage_set.first().image_url
                 } for order_product in order_products
             ]
-
-        return JsonResponse({'MESSAGE' : 'SUCCESS', 'order_products' : order_products}, status=201)
+        return JsonResponse({'MESSAGE' : 'SUCCESS', 'order_products' : carts}, status=201)
 
 
     @login_check
