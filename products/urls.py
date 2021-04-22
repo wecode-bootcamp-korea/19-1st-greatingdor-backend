@@ -10,3 +10,4 @@ urlpatterns = [
     path("/<int:product_id>/options", ProductOptionView.as_view()),
     path("/<int:product_id>/reviews", ProductReviewView.as_view()),
 ]
+

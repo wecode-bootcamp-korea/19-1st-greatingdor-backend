@@ -60,3 +60,4 @@ class CartView(View):
             return JsonResponse({'ERROR': "MORE_OBJECTS"}, status = 400)
         except Exception as e:
             return JsonResponse({'ERROR': f"{e}"}, status = 400)
+        
