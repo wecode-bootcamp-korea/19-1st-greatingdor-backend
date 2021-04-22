@@ -60,3 +60,10 @@ class CartView(View):
             return JsonResponse({'ERROR': "MORE_OBJECTS"}, status = 400)
         except Exception as e:
             return JsonResponse({'ERROR': f"{e}"}, status = 400)
+    
+    @login_check
+    def put(self, request):
+        data      = json.loads(request.body)
+        member_id = request.member.id
+        OrderProduct.objects.get(order__member_id=member_id, product_id=data['product_id']).delete()
+        return JsonResponse({'MESSAGE' : 'SUCCESS'}, status=200)
